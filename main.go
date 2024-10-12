@@ -11,7 +11,7 @@ func main() {
 	// Custom CORS configuration
 
 	app.Use(cors.New(cors.Config{
-		AllowOrigins:     "http://localhost:8080", // Specify allowed origins
+		AllowOrigins:     "http://34.207.102.227:3080", // Specify allowed origins
 		AllowMethods:     "GET,POST,PUT,DELETE",
 		AllowHeaders:     "Content-Type, Authorization",
 		ExposeHeaders:    "Content-Length",
