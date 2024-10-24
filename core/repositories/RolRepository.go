@@ -32,18 +32,22 @@ func GetRolInstance() interfaces.IRol {
 func (db *OpenConnection) GetFindAll() ([]entities.Rol, error) {
 	var roles []entities.Rol
 	db.mux.Lock()
-	result := db.connection.Order(utils.DB_ORDER_DESC).Find(&roles)
-	defer database.Closedb()
 	defer db.mux.Unlock()
-	return roles, result.Error
+	result := db.connection.Order(utils.DB_ORDER_DESC).Find(&roles)
+	//defer database.Closedb()
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return roles, nil
 }
 
 func (db *OpenConnection) GetFindById(id int) (entities.Rol, error) {
-	db.mux.Lock()
+
 	var rol entities.Rol
-	result := db.connection.Find(&rol, id)
-	defer database.Closedb()
+	db.mux.Lock()
 	defer db.mux.Unlock()
+	result := db.connection.Find(&rol, id)
+	//defer database.Closedb()
 	return rol, result.Error
 }
 
@@ -52,9 +56,9 @@ param:rol is a struct
 */
 func (db *OpenConnection) Create(rol entities.Rol) (entities.Rol, error) {
 	db.mux.Lock()
-	err := db.connection.Create(&rol).Error
-	defer database.Closedb()
 	defer db.mux.Unlock()
+	err := db.connection.Create(&rol).Error
+	//defer database.Closedb()
 	return rol, err
 }
 
@@ -63,9 +67,9 @@ func (db *OpenConnection) Create(rol entities.Rol) (entities.Rol, error) {
 */
 func (db *OpenConnection) Update(id uint, rol entities.Rol) (entities.Rol, error) {
 	db.mux.Lock()
-	result := db.connection.Where(utils.DB_EQUAL_ID, id).Updates(&rol)
-	defer database.Closedb()
 	defer db.mux.Unlock()
+	result := db.connection.Where(utils.DB_EQUAL_ID, id).Updates(&rol)
+	//defer database.Closedb()
 	return rol, result.Error
 
 }
@@ -74,12 +78,14 @@ func (db *OpenConnection) Update(id uint, rol entities.Rol) (entities.Rol, error
 @param: id is an int
 */
 func (db *OpenConnection) Delete(id uint) (bool, error) {
-	db.mux.Lock()
 	var rol entities.Rol
+	db.mux.Lock()
+	defer db.mux.Unlock()
+
 	result := db.connection.Where(utils.DB_EQUAL_ID, id).Delete(&rol)
 
-	defer database.Closedb()
-	defer db.mux.Unlock()
+	//defer database.Closedb()
+
 	if result.RowsAffected == 0 {
 		return true, result.Error
 	}
@@ -90,17 +96,18 @@ func (db *OpenConnection) Delete(id uint) (bool, error) {
 @params: id is an uint number and name is a string
 */
 func (db *OpenConnection) GetFindByName(id uint, name string) (bool, error) {
-	db.mux.Lock()
-	var rol entities.Rol
 
+	var rol entities.Rol
+	db.mux.Lock()
+	defer db.mux.Unlock()
 	query := db.connection.Where(utils.DB_NAME, name)
 	if id > 0 {
 		query = query.Where(utils.DB_DIFF_ID, id)
 	}
 	query = query.Find(&rol)
 
-	defer database.Closedb()
-	defer db.mux.Unlock()
+	//defer database.Closedb()
+
 	if query.RowsAffected == 1 {
 		return true, query.Error
 	}
