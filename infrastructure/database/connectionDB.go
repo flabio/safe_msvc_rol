@@ -2,6 +2,7 @@ package database
 
 import (
 	"fmt"
+	"log"
 	"os"
 
 	"github.com/joho/godotenv"
@@ -13,7 +14,7 @@ import (
 func DatabaseConnection() *gorm.DB {
 	errEnv := godotenv.Load()
 	if errEnv != nil {
-		panic(errEnv.Error())
+		log.Println(errEnv.Error())
 	}
 	DB_USER := os.Getenv("DB_USER")
 	DB_PASSWORD := os.Getenv("DB_PASSWORD")
@@ -32,7 +33,7 @@ func DatabaseConnection() *gorm.DB {
 	)
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
-		panic(err.Error())
+		log.Println(err.Error())
 	}
 	db.AutoMigrate(&entities.Rol{})
 	return db
@@ -41,7 +42,7 @@ func DatabaseConnection() *gorm.DB {
 func CloseConnection(db *gorm.DB) {
 	dbSQL, err := db.DB()
 	if err != nil {
-		panic(err.Error())
+		log.Println(err.Error())
 	}
 	dbSQL.Close()
 }
