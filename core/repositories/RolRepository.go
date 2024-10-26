@@ -3,10 +3,10 @@ package repositories
 import (
 	"sync"
 
+	constants "github.com/flabio/safe_constants"
 	"github.com/msvc_rol/core/interfaces"
 	"github.com/msvc_rol/infrastructure/database"
 	"github.com/msvc_rol/infrastructure/entities"
-	"github.com/msvc_rol/infrastructure/utils"
 	"gorm.io/gorm"
 )
 
@@ -33,7 +33,7 @@ func (db *OpenConnection) GetFindAll() ([]entities.Rol, error) {
 	var roles []entities.Rol
 	db.mux.Lock()
 	defer db.mux.Unlock()
-	result := db.connection.Order(utils.DB_ORDER_DESC).Find(&roles)
+	result := db.connection.Order(constants.DB_ORDER_DESC).Find(&roles)
 	//defer database.Closedb()
 	if result.Error != nil {
 		return nil, result.Error
@@ -68,7 +68,7 @@ func (db *OpenConnection) Create(rol entities.Rol) (entities.Rol, error) {
 func (db *OpenConnection) Update(id uint, rol entities.Rol) (entities.Rol, error) {
 	db.mux.Lock()
 	defer db.mux.Unlock()
-	result := db.connection.Where(utils.DB_EQUAL_ID, id).Updates(&rol)
+	result := db.connection.Where(constants.DB_EQUAL_ID, id).Updates(&rol)
 	//defer database.Closedb()
 	return rol, result.Error
 
@@ -82,7 +82,7 @@ func (db *OpenConnection) Delete(id uint) (bool, error) {
 	db.mux.Lock()
 	defer db.mux.Unlock()
 
-	result := db.connection.Where(utils.DB_EQUAL_ID, id).Delete(&rol)
+	result := db.connection.Where(constants.DB_EQUAL_ID, id).Delete(&rol)
 
 	//defer database.Closedb()
 
@@ -100,9 +100,9 @@ func (db *OpenConnection) GetFindByName(id uint, name string) (bool, error) {
 	var rol entities.Rol
 	db.mux.Lock()
 	defer db.mux.Unlock()
-	query := db.connection.Where(utils.DB_NAME, name)
+	query := db.connection.Where(constants.DB_NAME, name)
 	if id > 0 {
-		query = query.Where(utils.DB_DIFF_ID, id)
+		query = query.Where(constants.DB_DIFF_ID, id)
 	}
 	query = query.Find(&rol)
 

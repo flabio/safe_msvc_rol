@@ -4,6 +4,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/msvc_rol/globalinterfaces"
 	"github.com/msvc_rol/handler"
+	"github.com/msvc_rol/middleware"
 )
 
 var (
@@ -24,7 +25,7 @@ var (
 func NewRouter(app *fiber.App) {
 
 	api := app.Group("/api/rol")
-	//api.Use(middleware.ValidateToken)
+	api.Use(middleware.ValidateToken)
 	api.Get("/", func(c *fiber.Ctx) error {
 		return rol.GetFindAll(c)
 	})
