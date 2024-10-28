@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"sync"
 
 	"github.com/joho/godotenv"
 	"github.com/msvc_rol/infrastructure/entities"
@@ -11,11 +12,28 @@ import (
 	"gorm.io/gorm"
 )
 
-func DatabaseConnection() *gorm.DB {
+var dbInstance *gorm.DB
+var dbOnce sync.Once
+
+func LoadEnv() {
 	errEnv := godotenv.Load()
 	if errEnv != nil {
-		log.Println(errEnv.Error())
+		log.Println("Error cargando el archivo .env", errEnv)
 	}
+}
+func GetDatabaseInstance() *gorm.DB {
+	dbOnce.Do(func() {
+		var err error
+		dbInstance, err = DatabaseConnection()
+		if err != nil {
+			log.Fatalf("Error al inicializar la base de datos: %v", err)
+		}
+	})
+	return dbInstance
+}
+
+func DatabaseConnection() (*gorm.DB, error) {
+	LoadEnv()
 	DB_USER := os.Getenv("DB_USER")
 	DB_PASSWORD := os.Getenv("DB_PASSWORD")
 	DB_HOST := os.Getenv("DB_HOST")
@@ -33,21 +51,23 @@ func DatabaseConnection() *gorm.DB {
 	)
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
-		log.Println(err.Error())
+		return nil, fmt.Errorf("no se pudo conectar a la base de datos: %w", err)
 	}
-	db.AutoMigrate(&entities.Rol{})
-	return db
+	err = db.AutoMigrate(&entities.Rol{})
+	if err != nil {
+		return nil, fmt.Errorf("no se pudo migrar la base de datos: %w", err)
+	}
+	return db, nil
 }
 
-func CloseConnection(db *gorm.DB) {
+func CloseConnection() {
+	db := GetDatabaseInstance()
 	dbSQL, err := db.DB()
 	if err != nil {
 		log.Println(err.Error())
 	}
-	dbSQL.Close()
-}
-
-func Closedb() {
-	var db *gorm.DB = DatabaseConnection()
-	CloseConnection(db)
+	err = dbSQL.Close()
+	if err != nil {
+		log.Println("Error closing database connection", err)
+	}
 }

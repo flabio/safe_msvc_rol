@@ -23,7 +23,7 @@ func GetRolInstance() interfaces.IRol {
 
 	_ONCE.Do(func() {
 		_OPEN = &OpenConnection{
-			connection: database.DatabaseConnection(),
+			connection: database.GetDatabaseInstance(),
 		}
 	})
 	return _OPEN
@@ -34,7 +34,6 @@ func (db *OpenConnection) GetFindAll() ([]entities.Rol, error) {
 	db.mux.Lock()
 	defer db.mux.Unlock()
 	result := db.connection.Order(constants.DB_ORDER_DESC).Find(&roles)
-	//defer database.Closedb()
 	if result.Error != nil {
 		return nil, result.Error
 	}
@@ -47,7 +46,6 @@ func (db *OpenConnection) GetFindById(id int) (entities.Rol, error) {
 	db.mux.Lock()
 	defer db.mux.Unlock()
 	result := db.connection.Find(&rol, id)
-	//defer database.Closedb()
 	return rol, result.Error
 }
 
@@ -58,7 +56,6 @@ func (db *OpenConnection) Create(rol entities.Rol) (entities.Rol, error) {
 	db.mux.Lock()
 	defer db.mux.Unlock()
 	err := db.connection.Create(&rol).Error
-	//defer database.Closedb()
 	return rol, err
 }
 
@@ -69,7 +66,6 @@ func (db *OpenConnection) Update(id uint, rol entities.Rol) (entities.Rol, error
 	db.mux.Lock()
 	defer db.mux.Unlock()
 	result := db.connection.Where(constants.DB_EQUAL_ID, id).Updates(&rol)
-	//defer database.Closedb()
 	return rol, result.Error
 
 }
@@ -83,9 +79,6 @@ func (db *OpenConnection) Delete(id uint) (bool, error) {
 	defer db.mux.Unlock()
 
 	result := db.connection.Where(constants.DB_EQUAL_ID, id).Delete(&rol)
-
-	//defer database.Closedb()
-
 	if result.RowsAffected == 0 {
 		return true, result.Error
 	}
@@ -105,8 +98,6 @@ func (db *OpenConnection) GetFindByName(id uint, name string) (bool, error) {
 		query = query.Where(constants.DB_DIFF_ID, id)
 	}
 	query = query.Find(&rol)
-
-	//defer database.Closedb()
 
 	if query.RowsAffected == 1 {
 		return true, query.Error
