@@ -71,7 +71,6 @@ func (rolService *rolService) Create(c *fiber.Ctx) error {
 			constants.MESSAGE: msgError,
 		})
 	}
-	log.Println(rol)
 	deepcopier.Copy(rolDtos).To(&rolCreate)
 	result, err := rolService.Irol.Create(rolCreate)
 	if err != nil {
