@@ -53,7 +53,7 @@ func DatabaseConnection() (*gorm.DB, error) {
 	if err != nil {
 		return nil, fmt.Errorf("no se pudo conectar a la base de datos: %w", err)
 	}
-	err = db.AutoMigrate(&entities.Rol{})
+	err = db.AutoMigrate(&entities.Rol{}, &entities.Module{}, &entities.ModuleRole{})
 	if err != nil {
 		return nil, fmt.Errorf("no se pudo migrar la base de datos: %w", err)
 	}

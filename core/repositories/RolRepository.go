@@ -7,13 +7,7 @@ import (
 	"github.com/msvc_rol/core/interfaces"
 	"github.com/msvc_rol/infrastructure/database"
 	"github.com/msvc_rol/infrastructure/entities"
-	"gorm.io/gorm"
 )
-
-type OpenConnection struct {
-	connection *gorm.DB
-	mux        sync.Mutex
-}
 
 func GetRolInstance() interfaces.IRol {
 	var (

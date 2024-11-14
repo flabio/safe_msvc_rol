@@ -17,5 +17,6 @@ func main() {
 	// 	AllowCredentials: true, // Allow credentials
 	// }))
 	routers.NewRouter(app)
+	routers.NewInstanceModuleRouter(app)
 	app.Listen(":3001")
 }
