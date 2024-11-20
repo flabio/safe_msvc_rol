@@ -11,3 +11,6 @@ type IRolGlobal interface {
 	Update(c *fiber.Ctx) error
 	Delete(c *fiber.Ctx) error
 }
+type IModuleRolGlobal interface {
+	GetModuleRolFindById(c *fiber.Ctx) error
+}

@@ -27,7 +27,7 @@ func (db *OpenConnection) GetFindAll() ([]entities.Rol, error) {
 	var roles []entities.Rol
 	db.mux.Lock()
 	defer db.mux.Unlock()
-	result := db.connection.Order(constants.DB_ORDER_DESC).Find(&roles)
+	result := db.connection.Preload("RoleModule.Module").Order(constants.DB_ORDER_DESC).Find(&roles)
 	if result.Error != nil {
 		return nil, result.Error
 	}
@@ -35,11 +35,10 @@ func (db *OpenConnection) GetFindAll() ([]entities.Rol, error) {
 }
 
 func (db *OpenConnection) GetFindById(id int) (entities.Rol, error) {
-
 	var rol entities.Rol
 	db.mux.Lock()
 	defer db.mux.Unlock()
-	result := db.connection.Find(&rol, id)
+	result := db.connection.Preload("RoleModule.Module").Find(&rol, id)
 	return rol, result.Error
 }
 

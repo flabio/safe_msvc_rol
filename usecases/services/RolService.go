@@ -2,7 +2,6 @@ package services
 
 import (
 	"encoding/json"
-	"log"
 	"net/http"
 	"strconv"
 
@@ -43,7 +42,7 @@ func (rolService *rolService) GetFindAll(c *fiber.Ctx) error {
 func (rolService *rolService) GetFindById(c *fiber.Ctx) error {
 	id, _ := strconv.Atoi(c.Params(constants.ID))
 	result, err := rolService.Irol.GetFindById(id)
-	log.Println(result)
+
 	if result.Id == 0 {
 		return c.Status(http.StatusNotFound).JSON(fiber.Map{
 			constants.STATUS:  http.StatusNotFound,

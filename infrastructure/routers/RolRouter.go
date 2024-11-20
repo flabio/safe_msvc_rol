@@ -11,17 +11,6 @@ var (
 	rol globalinterfaces.IRolGlobal = handler.NewRolHandler()
 )
 
-// CreateOrder Creating Order
-//
-//	@Summary		Creating Order
-//	@Description	Creating Order with given request
-//	@Tags			Rol
-//	@Accept			json
-//	@Produce		json
-//	@Success		200				{string}	string
-//	@Failure		400				{string}	string	"Bad Request"
-//	@Router			/rols [post]
-
 func NewRouter(app *fiber.App) {
 
 	api := app.Group("/api/rol")

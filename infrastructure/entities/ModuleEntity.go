@@ -3,6 +3,7 @@ package entities
 type Module struct {
 	Id          uint          `gorm:"primary_key:auto_increment"`
 	Name        string        `gorm:"type:varchar(100);not null" json:"name"`
+	Icon        string        `gorm:"type:varchar(255)" json:"icon"`
 	Description string        `gorm:"type:text" json:"description"`
 	Order       int           `gorm:"type:integer" json:"order"`
 	Active      bool          `gorm:"type:boolean" json:"active"`

@@ -232,6 +232,7 @@ func validateModule(id uint, moduleDto dto.ModuleDTO, s *moduleService, c *fiber
 func MapToStructModule(dataDto *dto.ModuleDTO, dataMap map[string]interface{}) {
 	rol := dto.ModuleDTO{
 		Name:   dataMap[constants.NAME].(string),
+		Icon:   dataMap["icon"].(string),
 		Order:  int(dataMap["order"].(float64)),
 		Active: dataMap[constants.ACTIVE].(bool),
 	}
@@ -241,6 +242,9 @@ func validateFieldModule(value map[string]interface{}) string {
 	var msg string = constants.EMPTY
 	if value[constants.NAME] == nil {
 		msg = constants.NAME_FIELD_IS_REQUIRED
+	}
+	if value["icon"] == nil {
+		msg = "The icon field is required "
 	}
 	if value["order"] == nil {
 		msg = "The order field is required "
@@ -254,6 +258,9 @@ func validateRequiredModule(field dto.ModuleDTO) string {
 	var msg string = constants.EMPTY
 	if field.Name == constants.EMPTY {
 		msg = constants.NAME_IS_REQUIRED
+	}
+	if field.Icon == constants.EMPTY {
+		msg = "The icon is required "
 	}
 	if field.Order == 0 {
 		msg = "The order is required "
